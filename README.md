@@ -1,7 +1,7 @@
 # Named numpy array
 Creates a class that behaves like numpy array, but has user defined addressable attributes
 
-Creating the class (last argument is just a type hint)
+Creating the class (uncomment in `main.py` to use last argument as a type hint)
 ```
 Point = getNamedNumpyClass('Point', ['x', 'y'])
 Color = getNamedNumpyClass('Color', ['r', 'g', 'b'], np.uint8)
