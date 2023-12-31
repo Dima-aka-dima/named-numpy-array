@@ -63,7 +63,7 @@ def getNamedNumpyArrayClassTyped(className, variableNames, dtype = np.float64):
     
     # creation from np.ndarray
     def _new(self, array, dtype = dtype):
-        if isinstance(array, list): array = np.array(array, dtype = dtype)
+        if isinstance(array, list): array = np.array(array)
         assert len(self.dict) == array.shape[-1], f"Last dimension should be {len(self.dict)}."
         return array.astype(dtype).view(self)
 
