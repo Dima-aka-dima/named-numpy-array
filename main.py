@@ -53,8 +53,36 @@ def getNamedNumpyArrayClass(className, variableNames):
     setattr(namedClass, '__getattr__', _getattr)
         
     return namedClass
+    
+## Another useful variation with automatic type conversion
 
+def getNamedNumpyArrayClassTyped(className, variableNames, dtype = np.float64):
+    
+    namedClass = type(className, (np.ndarray,), {
+        'dict': dict(zip(variableNames, range(len(variableNames))))})
+    
+    # creation from np.ndarray
+    def _new(self, array, dtype = dtype):
+        if isinstance(array, list): array = np.array(array, dtype = dtype)
+        assert len(self.dict) == array.shape[-1], f"Last dimension should be {len(self.dict)}."
+        return array.astype(dtype).view(self)
 
+    # update array on setting variables
+    def _setattr(self, name, value):
+        if name in self.dict: self[...,self.dict[name]] = value
+        else: self[name] = value
+      
+    # addressing variables as attributes
+    def _getattr(self, name):
+        if name in self.dict: return self[...,self.dict[name]]
+        else: return self[name]
+        
+    setattr(namedClass, '__new__', _new)
+    setattr(namedClass, '__setattr__', _setattr)
+    setattr(namedClass, '__getattr__', _getattr)
+        
+    return namedClass
+    
 ## This is typed version but mypy doesn't like it
 
 # from typing import List, Any
